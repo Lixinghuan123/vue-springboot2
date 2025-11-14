@@ -1,28 +1,27 @@
 <template>
     <div class="notice-list" style="margin: 20px;">
-        <el-page-header @back="$router.back()" content="竞选申请处"></el-page-header>
+        <el-page-header @back="$router.back()" content="补贴申请"></el-page-header>
 
         <el-form ref="form" :model="ruleform" :rules="rules" label-width="120px">
             <el-form-item>
                 <!-- 校验规则有很多，prop用来指定具体的哪条校验规则 -->
-                <el-form-item label="候选人：" prop="cadreName" style="margin-left:20px;margin-top:20px;">
-                    <el-input placeholder="请输入姓名" v-model="ruleform.cadreName">
+                <el-form-item label="申请人：" prop="subsidyName" style="margin-left:20px;margin-top:20px;">
+                    <el-input placeholder="请输入姓名" v-model="ruleform.subsidyName">
                     </el-input>
                 </el-form-item>
-                <el-form-item label="竞选职位：" prop="cadrePosition" style="margin-left:20px;margin-top:20px;">
-                    <el-input placeholder="竞选职位" v-model="ruleform.cadrePosition">
+                <el-form-item label="家庭情况说明：" prop="subsidyinfo" style="margin-left:20px;margin-top:20px;">
+                    <el-input type="textarea" :rows="5" placeholder="家庭情况说明" 
+                        v-model="ruleform.subsidyinfo" style="width: 100%;">
                     </el-input>
                 </el-form-item>
-                <el-form-item label="竞选宣言：" prop="cadreDiscription" style="margin-left:20px;margin-top:20px;">
-                    <el-input type="textarea" :rows="5" placeholder="竞选宣言" 
-                        v-model="ruleform.cadreDiscription" style="width: 100%;">
+                <el-form-item label="申请金额：" prop="subsidyNum" style="margin-left:20px;margin-top:20px;">
+                    <el-input placeholder="申请金额" v-model="ruleform.subsidyNum">
                     </el-input>
                 </el-form-item>
-               
-                <!-- <el-form-item label="当前票数：" prop="cadreNum" style="margin-left:20px;margin-top:20px;">
-                    <el-input placeholder="支出金额" v-model="ruleform.cadreNum">
-                    </el-input>
-                </el-form-item>                          -->
+                <el-form-item label="申请时间：" prop="subsidyTime" suffix-icon="el-icon-date" style="margin-left:20px;margin-top:20px;">
+                    <el-date-picker placeholder="申请时间" v-model="ruleform.subsidyTime">
+                    </el-date-picker>
+                </el-form-item>                             
             </el-form-item> 
             
             <el-form-item>
@@ -37,11 +36,11 @@
 <script>
     import ImgUpload from "../notice/components/ImgUpload.vue";
     import CateSelect from "../notice/components/CateSelect.vue";
-    import { addCadre,getCadreInfo} from "@/api/elect"
+    import { addSubsidy,getSubsidyInfo} from "@/api/subsidy"
     //import { mapActions,mapState } from "vuex";//mapState映射数据库中的数据成为计算属性，我也不懂计算属性是干嘛的
     export default {
-        name: "incomeForm",
-        props: ["cadreId"],
+        name: "subsidyForm",
+        props: ["subsidyId"],
         components: {
             ImgUpload,
             CateSelect,
@@ -51,12 +50,11 @@
                 // options: [],
 
                 ruleform: {
-                    inId:"",
-                    inChargeName: "",
-                    inSource: "",
-                    inSum: "",
-                    inStatus: false,
-                    inTime: "",
+                    subsidyId:"",
+                    subsidyName: "",
+                    subsidyinfo: "",
+                    subsidyNum: "",
+                    subsidyTime: "",
                     
                 },
                 rules: {
@@ -95,17 +93,17 @@
         // },
         mounted() {
             //if noticeId值存在就说明进入了编辑界面          
-            if(this.cadreId){
-                getCadreInfo(this.cadreId).then(res=>{
+            if(this.subsidyId){
+                getSubsidyInfo(this.subsidyId).then(res=>{
                     console.log("res",res);
                     let info=res.data.info;
                     this.ruleform={//给对象赋值可以这么写
                         
-                        cadreId:this.cadreId,
-                        cadreName: info.cadreName,
-                        cadrePosition: info.cadrePosition,
-                        cadreDiscription: info.cadreDiscription,
-                        cadreNum: info.cadreNum,
+                        subsidyId:this.subsidyId,
+                        subsidyName: info.subsidyName,
+                        subsidyinfo: info.subsidyinfo,
+                        subsidyNum: info.subsidyNum,
+                        subsidyTime:info.subsidyTime,
                     }
                 })
             }
@@ -118,10 +116,9 @@
                     if (valid) {
                         // alert('submit!');
                         let data = { ...this.ruleform };
-                        addCadre(data).then(res => {
+                        addSubsidy(data).then(res => {
                             console.log(res);
                             // console.log(res.success);
-
                             if (res.success) {//这里好像得对data的数据格式有要求 
                                 this.$message({
                                     message: `恭喜你，申请成功提交`,

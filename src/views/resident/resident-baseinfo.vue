@@ -6,138 +6,148 @@
                 <el-select placeholder="请选择">
                     <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
-                </el-select>
-                <el-date-picker type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-                </el-date-picker>
-                <el-button type="primary" icon="el-icon-search">搜索</el-button>
-                <el-button type="primary" icon="el-icon-edit">添加</el-button>
-                <el-button type="primary" icon="el-icon-download">访问</el-button>
-                <el-checkbox style="margin-left:20px">审核人</el-checkbox>
+                </el-select>                
+                <el-button type="primary" icon="el-icon-search" >搜索</el-button>
+                <el-button type="primary" icon="el-icon-edit" @click="$router.push('/resident/resident-update')">添加</el-button>              
             </el-col>
         </el-row>
         <!--data="list"指定数据源-->
         <el-table :data="list" style="width: 100%" border>
-            <el-table-column prop="id" label="序号" align="center">
+            <el-table-column prop="peopleId" label="序号" align="center">
                 <template slot-scope="{row,$index}">
                     <div>{{$index+1}}</div>
                 </template>
             </el-table-column>
-            <el-table-column prop="name" label="姓名" align="center">
+            <el-table-column prop="peopleName" label="姓名" align="center">
                 <template slot-scope="{row,$index}">
-                    <div>{{row.name}}</div>
+                    <div>{{row.peopleName}}</div>
                 </template>
             </el-table-column>
-            <el-table-column prop="sex" label="性别" align="center">
+            <el-table-column prop="peopleSex" label="性别" align="center">
                 <template slot-scope="{row,$index}">
-                    <div>{{row.sex ? '男':'女'}}</div>
+                    <div>{{row.peopleSex ? '男':'女'}}</div>
                 </template>
             </el-table-column>
-            <!-- <el-table-column prop="price" label="价格" align="center">
+            <el-table-column prop="peopleCardId" label="身份证号" align="center">
                 <template slot-scope="{row,$index}">
-                    <div>{{ `¥${row.price.toFixed(2)}` }}</div>
-                </template>
-            </el-table-column> -->
-            <el-table-column prop="identityCard" label="身份证号" align="center">
-                <template slot-scope="{row,$index}">
-                    <div>{{ row.identityCard }}</div>
+                    <div>{{ row.peopleCardId }}</div>
                 </template>
             </el-table-column>
-            <el-table-column prop="nation" label="民族" align="center">
+            <el-table-column prop="peopleNation" label="民族" align="center">
                 <template slot-scope="{row,$index}">
-                    <div>{{ row.nation}}</div>
+                    <div>{{ row.peopleNation}}</div>
                 </template>
             </el-table-column>
-            <el-table-column prop="birthday" label="出生日期" align="center">
+            <el-table-column prop="peopleBrithday" label="出生日期" align="center">
                 <template slot-scope="{row,$index}">
-                    <div>{{ row.birthday }}</div>
+                    <div>{{ row.peopleBrithday }}</div>
                 </template>
             </el-table-column>
-            <el-table-column prop="phone" label="手机号" align="center">
+            <el-table-column prop="peoplePhone" label="手机号" align="center">
                 <template slot-scope="{row,$index}">
-                    <div>{{ row.phone }}</div>
+                    <div>{{ row.peoplePhone }}</div>
                 </template>
             </el-table-column>
-            <el-table-column prop="homePhone" label="家庭电话号" align="center">
+            <el-table-column prop="peopleHomePhone" label="家庭电话号" align="center">
                 <template slot-scope="{row,$index}">
-                    <div>{{ row.homePhone }}</div>
+                    <div>{{ row.peopleHomePhone }}</div>
                 </template>
             </el-table-column>
-            <el-table-column prop="email" label="电子邮箱" align="center">
+            <el-table-column prop="peopleEmail" label="电子邮箱" align="center">
                 <template slot-scope="{row,$index}">
-                    <div>{{ row.email }}</div>
+                    <div>{{ row.peopleEmail }}</div>
                 </template>
             </el-table-column>
             <el-table-column label="操作" align="center" width="230">
                 <template slot-scope="{row,$index}">
-                    <el-button type="primary" size="mini">编辑</el-button>
-                    <el-button v-if="row.published" type="primary" size=" mini">详情</el-button>
-                    <el-button v-else type="success" size="mini">审核</el-button>
-                    <el-button type="danger" size="mini">删除</el-button>
+                    <el-button type="primary" size="mini" @click="toEdit(row)">编辑</el-button>                  
+                    <el-button type="danger" size="mini" @click="peopleDelete(row)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
-        <el-pagination style="margin-top:  20px;" :current-page="currentPage4" :page-sizes="[2, 5, 10, 20]"
-            :page-size="2" layout="total, sizes, prev, pager, next, jumper" :total="400">
+        <el-pagination style="margin-top:  20px;" :current-page="page" :page-sizes="[2, 5, 10, 20]"
+            :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total" @current-change="currentChangeHandle"
+            @size-change="sizeChangeHandle">
         </el-pagination>
     </div>
 </template>
 <script>
+     import {getResidentList,residentDel} from "@/api/resident"
     export default {
-        name: " goodList", props: [], 
+        name: " goodList", props: ["peopleId"], 
         data() {
             return {
-                options: [{ value: '选项1', label: '黄金糕' }, {
-                    value: '选项2',
-                    label: '双皮奶'
-                }, { value: '选项3', label: '蚵仔煎' }, { value: '选项4', label: '龙须面' }, {
-                    value: '选项5',
-                    label: '北京烤鸭'
-                }], value: '', 
-                list: [{
-                    id:1,
-                    name:"小明",
-                    sex: true,
-                    birthday:"2000-07-09",
-                    identityCard:"140322200007096626",
-                    nation:"汉族",
-                    phone:"13663535641",
-                    homePhone : "13663535083",
-                    email : "2908238338@qq.com",
-
-                }, {
-                    id: 2,
-                     name:"小明",
-                    sex: true,
-                    birthday:"2000-07-09",
-                    identityCard:"140322200007096626",
-                    nation:"汉族",
-                    phone:"13663535641",
-                    homePhone : "13663535083",
-                    email : "2908238338@qq.com",
-                }, {
-                    id: 3,
-                    name:"小明",
-                    sex: true,
-                    birthday:"2000-07-09",
-                    identityCard:"140322200007096626",
-                    nation:"汉族",
-                    phone:"13663535641",
-                    homePhone : "13663535083",
-                    email : "2908238338@qq.com",
-                }, {
-                    id: 4,
-                    name:"小明",
-                    sex: true,
-                    birthday:"2000-07-09",
-                    identityCard:"140322200007096626",
-                    nation:"汉族",
-                    phone:"13663535641",
-                    homePhone : "13663535083",
-                    email : "2908238338@qq.com",
-                }],
+                options: [],
+                 value: '', 
+                list: [],
+                page:1,
+                size:2,
+                total:0,
+                // 搜索
+                name:"",
+                cate:"",
             };
         },
-         methods: {},
+        created(){
+            this.getList();
+        },
+         methods: {
+            getList(){
+                let params={
+                    id:this.id,
+                    currentPage:this.page,//当前页
+                    size:this.size,//一页几条数据
+                    cate:this.cate,//类型搜索框内容
+                    name:this.name//内容搜索框内容
+                }
+                
+                getResidentList(params).then(res=>{
+                   // debugger,一定要返回ok（）
+                    console.log("res",res);
+                   if(res.data && res.data.iPage.records){
+                        this.list=res.data.iPage.records;
+                        this.total=res.data.iPage.total;
+                    }
+                })
+            },
+            toEdit(row){
+                //console.log("exId",exId);
+                this.$router.push("/resident/resident-edit/"+row.peopleId);
+            },
+                currentChangeHandle(val){
+                    this.page=val;
+                    this.getList();
+                },
+                sizeChangeHandle(val){
+                    this.size=val;
+                    this.getList();
+                },
+                peopleDelete(row){
+                    this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                    }).then(() => {
+                     console.log("peopleId",row.peopleId);//变量的格式到底是什么，row.noticeId为什么是未定义的
+                        residentDel(row.peopleId).then(res=>{
+                            console.log("success",res.success)
+                        if(res.success==true){
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功!'
+                            });
+                            this.getList();//这里有点问题，会短暂的缺数据，因为传递的是16号页，而不是15号页
+                        }
+                        });
+                
+                    }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });          
+                    });
+                }
+         },
     };
      </script>
 <style lang="scss">

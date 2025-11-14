@@ -8,24 +8,28 @@
     -->
     <el-form ref="form" :model="ruleform" :rules="rules" label-width="80px" style="width:520px;">
         <!--prop中的name是指rule中的name-->
-        <el-form-item label="昵称" prop="name">
-            <el-input v-model="ruleform.name"></el-input>
+        <el-form-item label="账号" prop="username">
+            <el-input v-model="ruleform.username"></el-input>
           </el-form-item>
-          <el-form-item label="商品描述" prop="desc">
-            <el-input v-model="ruleform.desc"></el-input>
+          <el-form-item label="简介" prop="introduce">
+            <el-input v-model="ruleform.introduce"></el-input>
           </el-form-item>
-          <el-form-item label="商品分类" prop="cate">
-            <CateSelect v-model="ruleform.cate"></CateSelect>
+          <el-form-item label="角色" prop="roles">
+            <el-input v-model="ruleform.roles"></el-input>
           </el-form-item>
-          <el-form-item label="商品价格" prop="price">
-            <el-input-number v-model="ruleform.price" :precision="2" :step="1" :min="0"></el-input-number>
+          <el-form-item label="真实姓名" prop="truename">
+            <el-input v-model="ruleform.truename" ></el-input>
           </el-form-item>
-          <el-form-item label="是否热销" prop="hot">
+          <el-form-item label="密码" prop="password">
+            <el-input placeholder="请输入密码" v-model="ruleform.password" show-password></el-input>
+          </el-form-item>
+          <!-- <el-form-item label="是否热销" prop="hot">
             <el-switch v-model="ruleform.hot">
-          </el-switch>
+          </el-switch> -->
           </el-form-item>
-          <el-form-item label="商品图片" >
-           <ImgUpload v-model="ruleform.img"></ImgUpload>
+          <el-form-item prop="">
+            <ImgUpload v-model="ruleform.url"></ImgUpload>
+            <!-- v-model可以把子组件传过来的img地址赋值给imgUrl -->
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
@@ -36,24 +40,26 @@
 </template>
 <script>
   //  import CateSelect from "./components/CateSelect.vue"
-   // import ImgUpload from "./components/ImgUpload.vue"
-   // import {submitGood} from "@/api/goods"
+    import ImgUpload from "../notice/components/ImgUpload.vue"
+    import {addAccount,getAccountInfo} from "@/api/account"
+    import { mapState }from "vuex"
     export default{
-        name:"goodForm",
+        name:"acountForm",
         props:[],
         components:{
             //CateSelect,
-            //ImgUpload
+            ImgUpload
         },
         data(){
             return {
                 ruleform:{
-                    name:"",
-                    desc:"",
-                    price:0,
-                    hot:true,
-                    img:"",
-                    cate:"",
+                  id:this.id,
+                  username:"",
+                  introduce:"",
+                  roles:"",
+                  password:"",
+                  truename:'',
+                  url:"",
 
                 },
                 rules:{
@@ -76,42 +82,58 @@
                         ],
 
                 }
-                    
-
-                
-
             };
         },
-        methods:{
-            submitForm(formName) {
-              this.$refs.form.validate((valid) => {
-                if (valid) {
-                 // alert('submit!');
-                  let data={...this.ruleform};
-                  submitGood(data).then(res=>{
-                    //console.log(res);
-                    if(res.data.info){
-                      this.$message({
-                        message:`恭喜你，提交成功`,
-                        type:"success",
-                        duration:1500, //持续多少秒
-                        onClose:()=>{
-                          this.$router.back();//返回上一页面
-
-                        }
-                      })
+        computed:{
+            ...mapState("user",["id"])
+        },
+        mounted() {
+            //if noticeId值存在就说明进入了编辑界面    
+            console.log("id",this.id);      
+            if(this.id){
+                getAccountInfo(this.id).then(res=>{
+                    console.log("res",res);
+                    let info=res.data.info;
+                    this.ruleform={//给对象赋值可以这么写
+                      id:this.id,
+                      username:info.username,
+                      introduce:info.introduce,
+                      roles:info.roles,
+                      password:info.password,
+                      truename:info.truename,
+                      url:info.url,
                     }
-                  })
-
-                } else {
-                  console.log('error submit!!');
-                  return false;
-                }
-              });
-            },
-            resetForm(formName) {
-              this.$refs[formName].resetFields();
+                })
             }
+        },
+        methods:{
+          submitForm(formName) {//这个地方有什么必要传入formName
+                this.$refs.form.validate((valid) => {
+                    if (valid) {
+                        // alert('submit!');
+                        let data = { ...this.ruleform };
+                        addAccount(data).then(res => {
+                            console.log(res);
+                            // console.log(res.success);
+
+                            if (res.success) {//这里好像得对data的数据格式有要求 
+                                this.$message({
+                                    message: `恭喜你，申请成功提交`,
+                                    type: "success",
+                                    duration: 1500, //持续多少秒
+                                    onClose: () => {
+                                        this.$router.back();//返回上一页面
+                                    }
+                                })
+                            }
+                        })
+
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
               },
     };
 </script>

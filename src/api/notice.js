@@ -8,6 +8,13 @@ export function getNoticeList(params) {//好像用不到参数啊
   })
 }
 
+export function getNoticeInfo(noticeId) {
+  return request({
+    url: '/notice/search',
+    method: 'get',
+    params: { noticeId }
+  })
+}
 export function fetchNotice(id) {
   return request({
     url: '/notice/detail',
@@ -31,12 +38,12 @@ export function updateNotice(data) {
     data
   })
 }
-export function noticeDel(ids){
+export function noticeDel(noticeId){
   return request({
       url:'/notice/delete',
       method:'PUT',
       data:{
-          ids
+        noticeId
       }
   })
 }

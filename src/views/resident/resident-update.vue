@@ -8,31 +8,31 @@
     -->
     <el-form ref="form" :model="ruleform" :rules="rules" label-width="140px" style="width:520px;margin-top: 20px;">
         <!--prop中的name是指rule中的name-->
-          <el-form-item label="姓名" prop="name">
-            <el-input v-model="ruleform.name"></el-input>
+          <el-form-item label="姓名" prop="peopleName">
+            <el-input v-model="ruleform.peopleName"></el-input>
           </el-form-item>
-          <el-form-item label="性别" prop="sex">
-            <el-radio v-model="ruleform.sex" label="1">男</el-radio>
-            <el-radio v-model="ruleform.sex" label="2">女</el-radio>
-            <!-- <el-input v-model="ruleform.sex"></el-input> -->
+          <el-form-item label="身份证" prop="peopleCardId">
+            <el-input v-model="ruleform.peopleCardId" :precision="2" :step="1" :min="0"></el-input>
           </el-form-item>
-          <el-form-item label="生日" prop="birthday">
-            <el-input v-model="ruleform.birthday"></el-input>
+          <el-form-item label="性别" prop="peopleSex">
+            <el-switch v-model="ruleform.peopleSex" active-text="男" inactive-text="女">
+            </el-switch>
           </el-form-item>
-          <el-form-item label="身份证" prop="identityCard">
-            <el-input v-model="ruleform.identityCard" :precision="2" :step="1" :min="0"></el-input>
+          <el-form-item label="民族" prop="peopleNation">
+            <el-input v-model="ruleform.peopleNation"> </el-input>
           </el-form-item>
-          <el-form-item label="民族" prop="nation">
-            <el-input v-model="ruleform.nation"> </el-input>
+          <el-form-item label="生日" prop="peopleBrithday">
+            <el-date-picker type="date" placeholder="请选择日期" suffix-icon="el-icon-date" v-model="ruleform.peopleBrithday" style="width: 100%;">
+            </el-date-picker>
           </el-form-item>
-          <el-form-item label="手机号" prop="phone" >
-           <el-input v-model="ruleform.phone"></el-input>
+          <el-form-item label="手机号" prop="peoplePhone" >
+           <el-input v-model="ruleform.peoplePhone"></el-input>
           </el-form-item>
-          <el-form-item label="家庭电话" prop="homePhone ">
-            <el-input v-model="ruleform.homePhone "></el-input>
+          <el-form-item label="家庭电话" prop="peopleHomePhone ">
+            <el-input v-model="ruleform.peopleHomePhone "></el-input>
           </el-form-item>
-          <el-form-item label="电子邮箱" prop="email ">
-            <el-input v-model="ruleform.email "></el-input>
+          <el-form-item label="电子邮箱" prop="peopleEmail ">
+            <el-input v-model="ruleform.peopleEmail "></el-input>
           </el-form-item>
           
           <el-form-item>
@@ -45,10 +45,12 @@
   <script>
   //  import CateSelect from "./components/CateSelect.vue"
       import ImgUpload from "../notice/components/ImgUpload.vue"
+      
+      import { addResident,getResidentInfo} from "@/api/resident"
    // import {submitGood} from "@/api/goods"
     export default{
         name:"LandForm",
-        props:[],
+        props:["peopleId"],
         components:{
             //CateSelect,
             ImgUpload
@@ -56,18 +58,16 @@
         data(){
             return {
                 ruleform:{                
-                    // desc:"",
-                    // price:0,
-                    // hot:true,                 
-                    id:1,
-                    name:"",
-                    sex: '1',
-                    birthday:"",
-                    identityCard:"",
-                    nation:"",
-                    phone:"",
-                    homePhone : "",
-                    email : "",
+                                  
+                  peopleId:"",
+                  peopleName:"",
+                  peopleCardId: "",
+                  peopleSex:'1',
+                  peopleNation:"",
+                  peopleBrithday:"",
+                  peoplePhone:"",
+                  peopleHomePhone : "",
+                  peopleEmail : "",
   
   
                 },
@@ -97,37 +97,56 @@
   
             };
         },
-        methods:{
-            submitForm(formName) {
-              this.$refs.form.validate((valid) => {
-                if (valid) {
-                 // alert('submit!');
-                  let data={...this.ruleform};
-                  submitGood(data).then(res=>{
-                    //console.log(res);
-                    if(res.data.info){
-                      this.$message({
-                        message:`恭喜你，提交成功`,
-                        type:"success",
-                        duration:1500, //持续多少秒
-                        onClose:()=>{
-                          this.$router.back();//返回上一页面
-  
-                        }
-                      })
+        mounted() {
+            //if noticeId值存在就说明进入了编辑界面    
+            console.log("peopleId",this.peopleId);      
+            if(this.peopleId){
+                getResidentInfo(this.peopleId).then(res=>{
+                    console.log("res",res);
+                    let info=res.data.info;
+                    this.ruleform={//给对象赋值可以这么写
+                        peopleId:this.peopleId,
+                        peopleName:info.peopleName,
+                        peopleCardId:info.peopleCardId ,
+                        peopleSex:info.peopleSex,
+                        peopleNation:info.peopleNation,
+                        peopleBrithday:info.peopleBrithday,
+                        peoplePhone:info.peoplePhone,
+                        peopleHomePhone :info.peopleHomePhone,
+                        peopleEmail :info.peopleEmail,
                     }
-                  })
-  
-                } else {
-                  console.log('error submit!!');
-                  return false;
-                }
-              });
-            },
-            resetForm(formName) {
-              this.$refs[formName].resetFields();
+                })
             }
-              },
+        },
+        methods:{
+          submitForm(formName) {//这个地方有什么必要传入formName
+                this.$refs.form.validate((valid) => {
+                    if (valid) {
+                        // alert('submit!');
+                        let data = { ...this.ruleform };
+                        addResident(data).then(res => {
+                            console.log(res);
+                            // console.log(res.success);
+
+                            if (res.success) {//这里好像得对data的数据格式有要求 
+                                this.$message({
+                                    message: `恭喜你，申请成功提交`,
+                                    type: "success",
+                                    duration: 1500, //持续多少秒
+                                    onClose: () => {
+                                        this.$router.back();//返回上一页面
+                                    }
+                                })
+                            }
+                        })
+
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
+        },
     };
   </script>
   <style lang="scss" scoped>

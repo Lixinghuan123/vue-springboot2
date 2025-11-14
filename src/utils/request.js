@@ -10,7 +10,7 @@ const service = axios.create({
   timeout: 5000 // request timeout
 })
 
-// request interceptor
+// request interceptor请求拦截器
 service.interceptors.request.use(
   config => {
     // do something before request is sent
@@ -30,7 +30,7 @@ service.interceptors.request.use(
   }
 )
 
-// response interceptor
+// response interceptor响应拦截器
 service.interceptors.response.use(
   /**
    * If you want to get http information such as headers or status
@@ -44,9 +44,10 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
-
+    //console.log("res.code ",res.code )
     // if the custom code is not 20000, it is judged as an error.
-    if (res.code !== 20000) {
+    //debugger
+    if (res.code != 20000) {
       Message({
         message: res.message || 'Error',
         type: 'error',
@@ -54,11 +55,11 @@ service.interceptors.response.use(
       })
 
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-      if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
+      if (res.code === 20001) {
         // to re-login
-        MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
-          confirmButtonText: 'Re-Login',
-          cancelButtonText: 'Cancel',
+        MessageBox.confirm('账号密码不匹配', '请重新登录', {
+          confirmButtonText: '重新登录',
+          cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
           store.dispatch('user/resetToken').then(() => {
@@ -72,6 +73,8 @@ service.interceptors.response.use(
     }
   },
   error => {
+    //如果后端没有给出响应
+    //message是一个ui组件，给出提示信息
     console.log('err' + error) // for debug
     Message({
       message: error.message,

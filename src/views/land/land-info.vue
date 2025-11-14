@@ -7,93 +7,159 @@
                     <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                 </el-select>
-                <el-date-picker type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-                </el-date-picker>
                 <el-button type="primary" icon="el-icon-search">搜索</el-button>
-                <el-button type="primary" icon="el-icon-edit">添加</el-button>
+                <el-button type="primary" icon="el-icon-edit" @click="$router.push('/land/land-update/')">添加</el-button>
                 <el-button type="primary" icon="el-icon-download">访问</el-button>
                 <el-checkbox style="margin-left:20px">审核人</el-checkbox>
             </el-col>
         </el-row>
         <!--data="list"指定数据源-->
         <el-table :data="list" style="width: 100%" border>
-            <el-table-column prop="id" label="序号" align="center">
+            <el-table-column prop="landId" label="序号" align="center">
                 <template slot-scope="{row,$index}">
                     <div>{{$index+1}}</div>
                 </template>
             </el-table-column>
-            <el-table-column prop="title" label="公告标题" align="center">
+           
+            
+            <el-table-column prop="landHead" label="户主" align="center">
                 <template slot-scope="{row,$index}">
-                    <img src="row.img" alt="">
-                    <div>{{row.title}}</div>
+                    <div>{{ row.landHead }}</div>
                 </template>
             </el-table-column>
-            <!-- <el-table-column prop="price" label="价格" align="center">
+            <el-table-column prop="landcountry" label="所属村镇" align="center">
                 <template slot-scope="{row,$index}">
-                    <div>{{ `¥${row.price.toFixed(2)}` }}</div>
-                </template>
-            </el-table-column> -->
-            <el-table-column prop="cate" label="公告类型" align="center">
-                <template slot-scope="{row,$index}">
-                    <div>{{ row.cate }}</div>
+                    <div>{{ row.landcountry }}</div>
                 </template>
             </el-table-column>
-            <el-table-column prop="read" label="是否已读" align="center">
+            <el-table-column prop="certificatesId" label="证书编号" align="center">
                 <template slot-scope="{row,$index}">
-                    <div>{{ row.read ? '是':'否' }}</div>
+                    <div>{{ row.certificatesId }}</div>
                 </template>
             </el-table-column>
-            <el-table-column prop="create_date" label="发布时间" align="center">
+            <el-table-column prop="certificatesUnit" label="发证单位" align="center">
                 <template slot-scope="{row,$index}">
-                    <div>{{ row.create_date }}</div>
+                    <div>{{ row.certificatesUnit }}</div>
                 </template>
             </el-table-column>
-            <el-table-column prop="check_status" label="公告状态" align="center">
+            <el-table-column prop="certificatesImg" label="证书截图" align="center">
                 <template slot-scope="{row,$index}">
-                    <div>{{ row.check_status?'已上架':'待审核' }}</div>
+                    <el-image :src="`http://localhost:8080/${row.certificatesImg}`"></el-image>                 
+                </template>
+            </el-table-column>   
+            <el-table-column prop="certificatesPeriod" label="发布时间" align="center">
+                <template slot-scope="{row,$index}">
+                    <div>{{ row.certificatesPeriod}}</div>
+                </template>
+            </el-table-column>
+            <el-table-column prop="landArea" label="土地面积" align="center">
+                <template slot-scope="{row,$index}">
+                    <div>{{ row.landArea}}</div>
                 </template>
             </el-table-column>
             <el-table-column label="操作" align="center" width="230">
                 <template slot-scope="{row,$index}">
-                    <el-button type="primary" size="mini">编辑</el-button>
-                    <el-button v-if="row.published" type="primary" size=" mini">详情</el-button>
-                    <el-button v-else type="success" size="mini">审核</el-button>
-                    <el-button type="danger" size="mini">删除</el-button>
+                    <el-button type="primary" size="mini"@click="toEdit(row)">编辑</el-button>
+                    <el-button  type="primary" size="mini">详情</el-button>                    
+                    <el-button type="danger" size="mini" @click="LandDelete(row)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
-        <el-pagination style="margin-top:  20px;" :current-page="currentPage4" :page-sizes="[2, 5, 10, 20]"
-            :page-size="2" layout="total, sizes, prev, pager, next, jumper" :total="400">
+        <el-pagination style="margin-top:  20px;" :current-page="page" :page-sizes="[2, 5, 10, 20]"
+            :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total" @current-change="currentChangeHandle"
+            @size-change="sizeChangeHandle">
         </el-pagination>
     </div>
 </template>
 <script>
+    
+     import {getLandList,getLandInfo,landDel} from "@/api/land"
+     import { mapState }from "vuex"
     export default {
-        name: " goodList", props: [], data() {
+        name: "landList",
+        props: ["landId"],
+        data() {
             return {
-                options: [{ value: '选项1', label: '黄金糕' }, {
-                    value: '选项2',
-                    label: '双皮奶'
-                }, { value: '选项3', label: '蚵仔煎' }, { value: '选项4', label: '龙须面' }, {
-                    value: '选项5',
-                    label: '北京烤鸭'
-                }], value: '', list: [{
-                    id:1, title: "vue框架", create_date: '2016-05-02', name: '王小虎',
-                     img: "",  cate: "phone", read: true, published: false,
-                    check_status: false,
-                }, {
-                    id: 2, title: "vue框架", create_date: '2016-05-02', name: '王小虎',
-                     img: "",  cate: "phone", read: true, published: false,
-                }, {
-                    id: 3,
-                    title: "vue框架", create_date: '2016-05-02', name: '王小虎',
-                     img: "",  cate: "phone", read: true, published: false,
-                }, {
-                    id: 4, title: "vue框架", create_date: '2016-05-02', name: '王小虎',
-                     img: "",  cate: "phone", read: true, published: false,
-                }]
+                options: [],
+                list:[],
+                // 分页
+                //id:'',
+                page:1,
+                size:2,
+                total:0,
+                // 搜索
+                name:"",
+                cate:"",
             };
-        }, methods: {},
+        }, 
+        created(){
+            this.getList();
+        },
+        methods: {
+            getList(){
+                let params={
+                    id:this.id,
+                    currentPage:this.page,//当前页
+                    size:this.size,//一页几条数据
+                    cate:this.cate,//类型搜索框内容
+                    name:this.name//内容搜索框内容
+                }
+                
+                getLandList(params).then(res=>{
+                   // debugger,一定要返回ok（）
+                    console.log("res",res);
+                   if(res.data && res.data.iPage.records){
+                        this.list=res.data.iPage.records;
+                        this.total=res.data.iPage.total;
+                    }
+                })
+            },
+             //英文分类转成中文
+             cate2ZH(cate){
+                let res= this.cates.filter(item=>item.cate == cate)//filter是返回一个满足条件的数组
+                if(res.length==1){
+                    return res[0].cateName;
+                }else{
+                    return "暂无分类";
+                }   
+                },
+            toEdit(row){
+                this.$router.push("/land/land-edit/"+row.landId);
+            },
+                currentChangeHandle(val){
+                    this.page=val;
+                    this.getList();
+                },
+                sizeChangeHandle(val){
+                    this.size=val;
+                    this.getList();
+                },
+                LandDelete(row){//什么时候才需要写参数
+                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+                }).then(() => {
+                   // console.log("noticeId",row.noticeId);//变量的格式到底是什么，row.noticeId为什么是未定义的
+                   landDel(row.landId).then(res=>{
+                        console.log("success",res.success)
+                       if(res.success==true){
+                        this.$message({
+                            type: 'success',
+                            message: '删除成功!'
+                        });
+                        this.getList();//这里有点问题，会短暂的缺数据，因为传递的是16号页，而不是15号页
+                       }
+                    });
+               
+                }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });          
+                });
+            }
+        },
     }; </script>
 <style lang="scss">
     .el-row {

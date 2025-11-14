@@ -56,6 +56,11 @@ export const constantRoutes = [
     hidden: true
   },
   {
+    path: '/register',
+    component: () => import('@/views/register/register'),
+    //hidden: true
+  },
+  {
     path: '/auth-redirect',
     component: () => import('@/views/login/auth-redirect'),
     hidden: true
@@ -160,6 +165,17 @@ export const asyncRoutes = [
           roles: ['admin','editor'] // or you can only set roles in sub nav
         }
       },
+      {
+        path: 'edit/:noticeId',//配置路由使得update与插入是同一个界面，但是要传入一个id
+        component: () => import('@/views/notice/notice-form'),
+        name: 'NoticeEdit',
+        hidden:true,
+        props:true,//添加这一行后，可以通过$route.params.id拿到id值
+        meta: {
+          title: '编辑公告',
+          roles: ['admin','editor'] // or you can only set roles in sub nav
+        }
+      },
     ]
   },
   {
@@ -184,11 +200,69 @@ export const asyncRoutes = [
         }
       },
       {
+        path: 'expenditure-update',
+        component: () => import('@/views/finance/expenditure-update'),
+        name: 'FinanceList',
+        meta: {
+          title: '支出申请',
+          roles: ['admin','editor'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: 'expenditure-edit/:exId',
+        component: () => import('@/views/finance/expenditure-update'),
+        name: 'FinanceExit',
+        props:true,
+        hidden:true,
+        meta: {
+          title: '重新编辑',
+          roles: ['admin','editor'] // or you can only set roles in sub nav
+        }
+      },
+      {
         path: 'income',
         component: () => import('@/views/finance/income'),
         name: 'FinanceIncome',
         meta: {
+          title: '收入情况汇报',
+          roles: ['admin','editor'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: 'income-update',
+        component: () => import('@/views/finance/income-update'),
+        name: 'FinanceIncome',
+        meta: {
           title: '收入情况',
+          roles: ['admin','editor'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: 'income-Edit/:inId',
+        component: () => import('@/views/finance/income-update'),
+        name: 'IncomeEdit',
+        props:true,
+        hidden:true,
+        meta: {
+          title: '收入情况重新编辑',
+          roles: ['admin','editor'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: 'subsidy',
+        component: () => import('@/views/finance/subsidy'),
+        name: 'subsidy',
+        meta: {
+          title: '补贴申请列表',
+          roles: ['admin','editor'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: 'subsidy-update',
+        component: () => import('@/views/finance/subsidy-update'),
+        name: 'subsidy',
+        meta: {
+          title: '补贴申请',
           roles: ['admin','editor'] // or you can only set roles in sub nav
         }
       },
@@ -216,11 +290,39 @@ export const asyncRoutes = [
         }
       },
       {
+        path: 'land-contract',
+        component: () => import('@/views/land/land-contract'),
+        name: 'LandList',
+        meta: {
+          title: '土地承包权信息管理',
+          roles: ['admin','editor'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: 'land-transfer',
+        component: () => import('@/views/land/land-transfer'),
+        name: 'LandList',
+        meta: {
+          title: '土地流转信息管理',
+          roles: ['admin','editor'] // or you can only set roles in sub nav
+        }
+      },
+      {
         path: 'land-update',
         component: () => import('@/views/land/land-update'),
         name: 'LandUpdate',
         meta: {
           title: '更新土地使用信息',
+          roles: ['admin','editor'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: 'land-edit/:landId',
+        component: () => import('@/views/land/land-update'),
+        name: 'LandEdit',
+        props:true,
+        meta: {
+          title: '重新编辑',
           roles: ['admin','editor'] // or you can only set roles in sub nav
         }
       },
@@ -257,9 +359,21 @@ export const asyncRoutes = [
         }
       },
       {
+        path: 'resident-edit/:peopleId',
+        component: () => import('@/views/resident/resident-update'),
+        name: 'ResidentEdit',
+        props:true,
+        hidden:true,
+        meta: {
+          title: '重新编辑',
+          roles: ['admin','editor'] // or you can only set roles in sub nav
+        }
+      },
+      {
         path: 'home-baseinfo',
         component: () => import('@/views/resident/home-baseinfo'),
         name: 'HomeList',
+        hidden:true,
         meta: {
           title: '家庭基本信息管理',
           roles: ['admin','editor'] // or you can only set roles in sub nav
@@ -269,6 +383,7 @@ export const asyncRoutes = [
         path: 'home-update',
         component: () => import('@/views/resident/home-update'),
         name: 'HomeUpdate',
+        hidden:true,
         meta: {
           title: '更新家庭信息',
           roles: ['admin','editor'] // or you can only set roles in sub nav
@@ -310,9 +425,21 @@ export const asyncRoutes = [
         path: 'elect-update',
         component: () => import('@/views/elect/elect-update'),
         name: 'ElectUpdate',
+        
         meta: {
-          title: '更新账号基本信息',
-          roles: ['admin'] // or you can only set roles in sub nav
+          title: '选举申请',
+          roles: ['admin','editor'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: 'elect-edit/:cadreId',
+        component: () => import('@/views/elect/elect-update'),
+        name: 'ElectEdit',
+        hidden:true,
+        props:true,
+        meta: {
+          title: '重新编辑',
+          roles: ['admin','editor'] // or you can only set roles in sub nav
         }
       },
      
@@ -334,6 +461,7 @@ export const asyncRoutes = [
         path: 'account-info',
         component: () => import('@/views/personinfo/account-info'),
         name: 'AccountInfoList',
+        hidden:true,
         meta: {
           title: '账号基本信息',
           roles: ['admin','editor'] // or you can only set roles in sub nav
@@ -409,203 +537,203 @@ export const asyncRoutes = [
   },
 
   /** when your routing map is too long, you can split it into small modules **/
-  componentsRouter,
-  chartsRouter,
-  nestedRouter,
-  tableRouter,
+  // componentsRouter,
+  // chartsRouter,
+  // nestedRouter,
+  // tableRouter,
 
-  {
-    path: '/example',
-    component: Layout,
-    redirect: '/example/list',
-    name: 'Example',
-    meta: {
-      title: 'Example',
-      icon: 'el-icon-s-help'
-    },
-    children: [
-      {
-        path: 'create',
-        component: () => import('@/views/example/create'),
-        name: 'CreateArticle',
-        meta: { title: 'Create Article', icon: 'edit' }
-      },
-      {
-        path: 'edit/:id(\\d+)',
-        component: () => import('@/views/example/edit'),
-        name: 'EditArticle',
-        meta: { title: 'Edit Article', noCache: true, activeMenu: '/example/list' },
-        hidden: true
-      },
-      {
-        path: 'list',
-        component: () => import('@/views/example/list'),
-        name: 'ArticleList',
-        meta: { title: 'Article List', icon: 'list' }
-      }
-    ]
-  },
+  // {
+  //   path: '/example',
+  //   component: Layout,
+  //   redirect: '/example/list',
+  //   name: 'Example',
+  //   meta: {
+  //     title: 'Example',
+  //     icon: 'el-icon-s-help'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'create',
+  //       component: () => import('@/views/example/create'),
+  //       name: 'CreateArticle',
+  //       meta: { title: 'Create Article', icon: 'edit' }
+  //     },
+  //     {
+  //       path: 'edit/:id(\\d+)',
+  //       component: () => import('@/views/example/edit'),
+  //       name: 'EditArticle',
+  //       meta: { title: 'Edit Article', noCache: true, activeMenu: '/example/list' },
+  //       hidden: true
+  //     },
+  //     {
+  //       path: 'list',
+  //       component: () => import('@/views/example/list'),
+  //       name: 'ArticleList',
+  //       meta: { title: 'Article List', icon: 'list' }
+  //     }
+  //   ]
+  // },
 
-  {
-    path: '/tab',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/tab/index'),
-        name: 'Tab',
-        meta: { title: 'Tab', icon: 'tab' }
-      }
-    ]
-  },
+  // {
+  //   path: '/tab',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/tab/index'),
+  //       name: 'Tab',
+  //       meta: { title: 'Tab', icon: 'tab' }
+  //     }
+  //   ]
+  // },
 
-  {
-    path: '/error',
-    component: Layout,
-    redirect: 'noRedirect',
-    name: 'ErrorPages',
-    meta: {
-      title: 'Error Pages',
-      icon: '404'
-    },
-    children: [
-      {
-        path: '401',
-        component: () => import('@/views/error-page/401'),
-        name: 'Page401',
-        meta: { title: '401', noCache: true }
-      },
-      {
-        path: '404',
-        component: () => import('@/views/error-page/404'),
-        name: 'Page404',
-        meta: { title: '404', noCache: true }
-      }
-    ]
-  },
+  // {
+  //   path: '/error',
+  //   component: Layout,
+  //   redirect: 'noRedirect',
+  //   name: 'ErrorPages',
+  //   meta: {
+  //     title: 'Error Pages',
+  //     icon: '404'
+  //   },
+  //   children: [
+  //     {
+  //       path: '401',
+  //       component: () => import('@/views/error-page/401'),
+  //       name: 'Page401',
+  //       meta: { title: '401', noCache: true }
+  //     },
+  //     {
+  //       path: '404',
+  //       component: () => import('@/views/error-page/404'),
+  //       name: 'Page404',
+  //       meta: { title: '404', noCache: true }
+  //     }
+  //   ]
+  // },
 
-  {
-    path: '/error-log',
-    component: Layout,
-    children: [
-      {
-        path: 'log',
-        component: () => import('@/views/error-log/index'),
-        name: 'ErrorLog',
-        meta: { title: 'Error Log', icon: 'bug' }
-      }
-    ]
-  },
+  // {
+  //   path: '/error-log',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'log',
+  //       component: () => import('@/views/error-log/index'),
+  //       name: 'ErrorLog',
+  //       meta: { title: 'Error Log', icon: 'bug' }
+  //     }
+  //   ]
+  // },
 
-  {
-    path: '/excel',
-    component: Layout,
-    redirect: '/excel/export-excel',
-    name: 'Excel',
-    meta: {
-      title: 'Excel',
-      icon: 'excel'
-    },
-    children: [
-      {
-        path: 'export-excel',
-        component: () => import('@/views/excel/export-excel'),
-        name: 'ExportExcel',
-        meta: { title: 'Export Excel' }
-      },
-      {
-        path: 'export-selected-excel',
-        component: () => import('@/views/excel/select-excel'),
-        name: 'SelectExcel',
-        meta: { title: 'Export Selected' }
-      },
-      {
-        path: 'export-merge-header',
-        component: () => import('@/views/excel/merge-header'),
-        name: 'MergeHeader',
-        meta: { title: 'Merge Header' }
-      },
-      {
-        path: 'upload-excel',
-        component: () => import('@/views/excel/upload-excel'),
-        name: 'UploadExcel',
-        meta: { title: 'Upload Excel' }
-      }
-    ]
-  },
+  // {
+  //   path: '/excel',
+  //   component: Layout,
+  //   redirect: '/excel/export-excel',
+  //   name: 'Excel',
+  //   meta: {
+  //     title: 'Excel',
+  //     icon: 'excel'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'export-excel',
+  //       component: () => import('@/views/excel/export-excel'),
+  //       name: 'ExportExcel',
+  //       meta: { title: 'Export Excel' }
+  //     },
+  //     {
+  //       path: 'export-selected-excel',
+  //       component: () => import('@/views/excel/select-excel'),
+  //       name: 'SelectExcel',
+  //       meta: { title: 'Export Selected' }
+  //     },
+  //     {
+  //       path: 'export-merge-header',
+  //       component: () => import('@/views/excel/merge-header'),
+  //       name: 'MergeHeader',
+  //       meta: { title: 'Merge Header' }
+  //     },
+  //     {
+  //       path: 'upload-excel',
+  //       component: () => import('@/views/excel/upload-excel'),
+  //       name: 'UploadExcel',
+  //       meta: { title: 'Upload Excel' }
+  //     }
+  //   ]
+  // },
 
-  {
-    path: '/zip',
-    component: Layout,
-    redirect: '/zip/download',
-    alwaysShow: true,
-    name: 'Zip',
-    meta: { title: 'Zip', icon: 'zip' },
-    children: [
-      {
-        path: 'download',
-        component: () => import('@/views/zip/index'),
-        name: 'ExportZip',
-        meta: { title: 'Export Zip' }
-      }
-    ]
-  },
+  // {
+  //   path: '/zip',
+  //   component: Layout,
+  //   redirect: '/zip/download',
+  //   alwaysShow: true,
+  //   name: 'Zip',
+  //   meta: { title: 'Zip', icon: 'zip' },
+  //   children: [
+  //     {
+  //       path: 'download',
+  //       component: () => import('@/views/zip/index'),
+  //       name: 'ExportZip',
+  //       meta: { title: 'Export Zip' }
+  //     }
+  //   ]
+  // },
 
-  {
-    path: '/pdf',
-    component: Layout,
-    redirect: '/pdf/index',
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/pdf/index'),
-        name: 'PDF',
-        meta: { title: 'PDF', icon: 'pdf' }
-      }
-    ]
-  },
-  {
-    path: '/pdf/download',
-    component: () => import('@/views/pdf/download'),
-    hidden: true
-  },
+  // {
+  //   path: '/pdf',
+  //   component: Layout,
+  //   redirect: '/pdf/index',
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/pdf/index'),
+  //       name: 'PDF',
+  //       meta: { title: 'PDF', icon: 'pdf' }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/pdf/download',
+  //   component: () => import('@/views/pdf/download'),
+  //   hidden: true
+  // },
 
-  {
-    path: '/theme',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/theme/index'),
-        name: 'Theme',
-        meta: { title: 'Theme', icon: 'theme' }
-      }
-    ]
-  },
+  // {
+  //   path: '/theme',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/theme/index'),
+  //       name: 'Theme',
+  //       meta: { title: 'Theme', icon: 'theme' }
+  //     }
+  //   ]
+  // },
 
-  {
-    path: '/clipboard',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/clipboard/index'),
-        name: 'ClipboardDemo',
-        meta: { title: 'Clipboard', icon: 'clipboard' }
-      }
-    ]
-  },
+  // {
+  //   path: '/clipboard',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/clipboard/index'),
+  //       name: 'ClipboardDemo',
+  //       meta: { title: 'Clipboard', icon: 'clipboard' }
+  //     }
+  //   ]
+  // },
 
-  {
-    path: 'external-link',
-    component: Layout,
-    children: [
-      {
-        path: 'https://github.com/PanJiaChen/vue-element-admin',
-        meta: { title: 'External Link', icon: 'link' }
-      }
-    ]
-  },
+  // {
+  //   path: 'external-link',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'https://github.com/PanJiaChen/vue-element-admin',
+  //       meta: { title: 'External Link', icon: 'link' }
+  //     }
+  //   ]
+  // },
 
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }

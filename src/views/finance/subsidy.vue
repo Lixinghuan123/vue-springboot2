@@ -2,55 +2,42 @@
     <div class="notice-list" style="margin: 20px;">
         <el-row>
             <el-col :span="24">
-                <el-input placeholder="请输入收款人姓名" style="width: 135px;"></el-input>
-                <el-select placeholder="请选择">
-                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
-                    </el-option>
-                </el-select>
-                <el-date-picker type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-                </el-date-picker>
+                <el-input placeholder="请输入申请人姓名" style="width: 150px;"></el-input>
                 <el-button type="primary" icon="el-icon-search">搜索</el-button>
-                <el-button type="primary" icon="el-icon-edit" @click="$router.push('/finance/income-update')">添加</el-button>               
+                <el-button type="primary" icon="el-icon-edit" @click="$router.push('/finance/subsidy-update')">添加</el-button>               
             </el-col>
         </el-row>
         <!--data="list"指定数据源-->
         <el-table :data="list" style="width: 100%" border>
-            <el-table-column prop="inId" label="序号" align="center">
+            <el-table-column prop="subsidyId" label="序号" align="center">
                 <template slot-scope="{row,$index}">
                     <div>{{$index+1}}</div>
                 </template>
             </el-table-column>
-            <el-table-column prop="inChargeName" label="使用人" align="center">
+            <el-table-column prop="subsidyName" label="申请人" align="center">
                 <template slot-scope="{row,$index}">                    
-                    <div>{{row.inChargeName}}</div>
+                    <div>{{row.subsidyName}}</div>
                 </template>
             </el-table-column>
            
-            <el-table-column prop="inSource" label="收入来源" align="center">
+            <el-table-column prop="subsidyinfo" label="家庭情况说明" align="center">
                 <template slot-scope="{row,$index}">
-                    <div>{{ row.inSource }}</div>
+                    <div>{{ row.subsidyinfo }}</div>
                 </template>
             </el-table-column>
-            <el-table-column prop="inSum" label="收入金额" align="center">
+            <el-table-column prop="subsidyNum" label="申请金额" align="center">
                 <template slot-scope="{row,$index}">
-                    <div>{{ row.inSum  }}</div>
+                    <div>{{ row.subsidyNum  }}</div>
                 </template>
             </el-table-column>
-            <el-table-column prop="inTime" label="创建时间" align="center">
+            <el-table-column prop="subsidyTime" label="申请时间" align="center">
                 <template slot-scope="{row,$index}">
-                    <div>{{ row.inTime }}</div>
-                </template>
-            </el-table-column>
-            <el-table-column prop="inStatus" label="管理状态" align="center">
-                <template slot-scope="{row,$index}">
-                    <div>{{ row.inStatus?'审核通过':'待审核' }}</div>
+                    <div>{{ row.subsidyTime }}</div>
                 </template>
             </el-table-column>
             <el-table-column label="操作" align="center" width="230">
                 <template slot-scope="{row,$index}">
-                    <el-button type="primary" size="mini" @click="toEdit(row)">编辑</el-button>
-                    <el-button  type="success" size="mini">审核</el-button>
-                    <el-button type="danger" size="mini" @click="incomeDelete(row)">删除</el-button>
+                    <el-button type="danger" size="mini" @click="subsidyDelete(row)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -61,10 +48,10 @@
     </div>
 </template>
 <script>
-    import {getIncomeList,incomeDel} from "@/api/income"
+    import {getSubsidyList,subsidyDel} from "@/api/subsidy"
     export default {
         name: " goodList", 
-        props: ["inId"],
+        props: ["subsidyId"],
          data() {
             return {
                 options: [], 
@@ -91,7 +78,7 @@
                     name:this.name//内容搜索框内容
                 }
                 
-                getIncomeList(params).then(res=>{
+                getSubsidyList(params).then(res=>{
                    // debugger,一定要返回ok（）
                     console.log("res",res);
                    if(res.data && res.data.iPage.records){
@@ -99,10 +86,6 @@
                         this.total=res.data.iPage.total;
                     }
                 })
-            },
-            toEdit(row){
-                //console.log("exId",exId);
-                this.$router.push("/finance/income-edit/"+row.inId);
             },
                 currentChangeHandle(val){
                     this.page=val;
@@ -112,14 +95,14 @@
                     this.size=val;
                     this.getList();
                 },
-                incomeDelete(row){
+                subsidyDelete(row){
                     this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                     }).then(() => {
-                     console.log("inId",row.inId);//变量的格式到底是什么，row.noticeId为什么是未定义的
-                        incomeDel(row.inId).then(res=>{
+                     console.log("subsidyId",row.subsidyId);//变量的格式到底是什么，row.noticeId为什么是未定义的
+                     subsidyDel(row.subsidyId).then(res=>{
                             console.log("success",res.success)
                         if(res.success==true){
                             this.$message({

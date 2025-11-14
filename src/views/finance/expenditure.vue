@@ -3,97 +3,144 @@
         <el-row>
             <el-col :span="24">
                 <el-input placeholder="请输入内容" style="width: 135px;"></el-input>
-                <el-select placeholder="请选择">
+                <!-- <el-select placeholder="请选择">
                     <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
-                </el-select>
+                </el-select> -->
                 <el-date-picker type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
                 </el-date-picker>
                 <el-button type="primary" icon="el-icon-search">搜索</el-button>
-                <el-button type="primary" icon="el-icon-edit">添加</el-button>
-                <el-button type="primary" icon="el-icon-download">访问</el-button>
-                <el-checkbox style="margin-left:20px">审核人</el-checkbox>
+                <el-button type="primary" icon="el-icon-edit" @click="$router.push('/finance/expenditure-update')">添加</el-button>
+                <!-- <el-button type="primary" icon="el-icon-download">访问</el-button>
+                <el-checkbox style="margin-left:20px">审核人</el-checkbox> -->
             </el-col>
         </el-row>
         <!--data="list"指定数据源-->
         <el-table :data="list" style="width: 100%" border>
-            <el-table-column prop="id" label="序号" align="center">
+            <el-table-column prop="exId" label="序号" align="center">
                 <template slot-scope="{row,$index}">
                     <div>{{$index+1}}</div>
                 </template>
             </el-table-column>
-            <el-table-column prop="name" label="使用人" align="center">
+            <el-table-column prop="exChargeName" label="申请人" align="center">
                 <template slot-scope="{row,$index}">                    
-                    <div>{{row.name}}</div>
+                    <div>{{row.exChargeName}}</div>
                 </template>
             </el-table-column>
            
-            <el-table-column prop="using" label="大概用途" align="center">
+            <el-table-column prop="exUsing" label="大概用途" align="center">
                 <template slot-scope="{row,$index}">
-                    <div>{{ row.using }}</div>
+                    <div>{{ row.exUsing }}</div>
                 </template>
             </el-table-column>
-            <el-table-column prop="expense" label="支出金额" align="center">
+            <el-table-column prop="exSum" label="支出金额" align="center">
                 <template slot-scope="{row,$index}">
-                    <div>{{ row.expense  }}</div>
+                    <div>{{ row.exSum  }}</div>
                 </template>
             </el-table-column>
-            <el-table-column prop="create_date" label="支出时间" align="center">
+            <el-table-column prop="exTime" label="支出时间" align="center">
                 <template slot-scope="{row,$index}">
-                    <div>{{ row.create_date }}</div>
+                    <div>{{ row.exTime }}</div>
                 </template>
             </el-table-column>
-            <el-table-column prop="check_status" label="管理状态" align="center">
+            <el-table-column prop="exStatus" label="管理状态" align="center">
                 <template slot-scope="{row,$index}">
-                    <div>{{ row.check_status?'审核通过':'待审核' }}</div>
+                    <div>{{ row.exStatus?'审核通过':'待审核' }}</div>
                 </template>
             </el-table-column>
             <el-table-column label="操作" align="center" width="230">
                 <template slot-scope="{row,$index}">
-                    <el-button type="primary" size="mini">编辑</el-button>
-                    <el-button v-if="row.published" type="primary" size=" mini">详情</el-button>
-                    <el-button v-else type="success" size="mini">审核</el-button>
-                    <el-button type="danger" size="mini">删除</el-button>
+                    <el-button type="primary" size="mini" @click="toEdit(row)">编辑</el-button>
+                    <el-button type="success" size="mini">审核</el-button> 
+                    <el-button type="danger" size="mini" @click="expendDelete(row)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
-        <el-pagination style="margin-top:  20px;" :current-page="currentPage4" :page-sizes="[2, 5, 10, 20]"
-            :page-size="2" layout="total, sizes, prev, pager, next, jumper" :total="400">
+        <el-pagination style="margin-top:  20px;" :current-page="page" :page-sizes="[2, 5, 10, 20]"
+            :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total" @current-change="currentChangeHandle"
+            @size-change="sizeChangeHandle">
         </el-pagination>
     </div>
 </template>
 <script>
+    import {getExpendList,expendDel} from "@/api/expend"
     export default {
-        name: " goodList", props: [], data() {
+        name: "expenditrueList", 
+        props: ["exId"],
+         data() {
             return {
-                options: [{ value: '选项1', label: '黄金糕' }, {
-                    value: '选项2',
-                    label: '双皮奶'
-                }, { value: '选项3', label: '蚵仔煎' }, { value: '选项4', label: '龙须面' }, {
-                    value: '选项5',
-                    label: '北京烤鸭'
-                }], value: '', 
-                list: [{
-                    id:1, name: "李苗苗", create_date: '2016-05-02', 
-                     img: "",  using: "税费", expense: 20, 
-                    check_status: false,
-                }, {
-                    id: 2, name: "李苗苗", create_date: '2016-05-02', 
-                     img: "",  using: "税费", expense: 20, 
-                    check_status: false,
-                }, {
-                    id: 3,
-                    name: "李苗苗", create_date: '2016-05-02', 
-                     img: "",  using: "税费", expense: 20, 
-                    check_status: false,
-                }, {
-                    id: 4,name: "李苗苗", create_date: '2016-05-02', 
-                     img: "",  using: "税费", expense: 20, 
-                    check_status: false,
-                }]
+                options:[],
+                list: [],
+                page:1,
+                size:2,
+                total:0,
+                // 搜索
+                name:"",
+                cate:"",
             };
-        }, methods: {},
-    }; </script>
+        },
+        created(){
+            this.getList();
+        },
+         methods: {
+            getList(){
+                let params={
+                    id:this.id,
+                    currentPage:this.page,//当前页
+                    size:this.size,//一页几条数据
+                    cate:this.cate,//类型搜索框内容
+                    name:this.name//内容搜索框内容
+                }
+                
+                getExpendList(params).then(res=>{
+                   // debugger,一定要返回ok（）
+                    console.log("res",res);
+                   if(res.data && res.data.iPage.records){
+                        this.list=res.data.iPage.records;
+                        this.total=res.data.iPage.total;
+                    }
+                })
+            },
+            toEdit(row){
+                //console.log("exId",exId);
+                this.$router.push("/finance/expenditure-edit/"+row.exId);
+            },
+                currentChangeHandle(val){
+                    this.page=val;
+                    this.getList();
+                },
+                sizeChangeHandle(val){
+                    this.size=val;
+                    this.getList();
+                },
+                expendDelete(row){//什么时候才需要写参数
+                    this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                    }).then(() => {
+                     console.log("exId",row.exId);//变量的格式到底是什么，row.noticeId为什么是未定义的
+                        expendDel(row.exId).then(res=>{
+                            console.log("success",res.success)
+                        if(res.success==true){
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功!'
+                            });
+                            this.getList();//这里有点问题，会短暂的缺数据，因为传递的是16号页，而不是15号页
+                        }
+                        });
+                
+                    }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });          
+                    });
+            }
+         },
+    }; 
+    </script>
 <style lang="scss">
     .el-row {
         margin-bottom: 20px;

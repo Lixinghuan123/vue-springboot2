@@ -69,32 +69,16 @@
 </template>
 <script>
     export default {
-        name: " goodList", props: [], data() {
+        name: "accountList",
+        props: [],
+          data() {
             return {
-                options: [{ value: '选项1', label: '黄金糕' }, {
-                    value: '选项2',
-                    label: '双皮奶'
-                }, { value: '选项3', label: '蚵仔煎' }, { value: '选项4', label: '龙须面' }, {
-                    value: '选项5',
-                    label: '北京烤鸭'
-                }], value: '', list: [{
-                    id:1, title: "vue框架", create_date: '2016-05-02', name: '王小虎',
-                     img: "",  cate: "phone", read: true, published: false,
-                    check_status: false,
-                }, {
-                    id: 2, title: "vue框架", create_date: '2016-05-02', name: '王小虎',
-                     img: "",  cate: "phone", read: true, published: false,
-                }, {
-                    id: 3,
-                    title: "vue框架", create_date: '2016-05-02', name: '王小虎',
-                     img: "",  cate: "phone", read: true, published: false,
-                }, {
-                    id: 4, title: "vue框架", create_date: '2016-05-02', name: '王小虎',
-                     img: "",  cate: "phone", read: true, published: false,
-                }]
+                options: [],
+                list:[],
             };
         }, methods: {},
-    }; </script>
+    }; 
+</script>
 <style lang="scss">
     .el-row {
         margin-bottom: 20px;

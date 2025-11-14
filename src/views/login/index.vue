@@ -44,9 +44,12 @@
           </span>
         </el-form-item>
       </el-tooltip>
-
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
-
+      <el-row >
+        <el-col :span="24">
+        <el-button :loading="loading" type="primary" style="width:45%" @click.native.prevent="handleLogin">登录</el-button>
+        <el-button :loading="loading" type="primary" style="width:50%" @click="register" >注册</el-button>
+        </el-col>
+      </el-row>
       <!-- <div style="position:relative">
         <div class="tips">
           <span>Username : admin</span>
@@ -97,7 +100,7 @@ export default {
     }
     return {
       loginForm: {
-        username: 'admin',
+        username: 'editor',
         password: '111111'
       },
       loginRules: {
@@ -142,6 +145,9 @@ export default {
       const { key } = e
       this.capsTooltip = key && key.length === 1 && (key >= 'A' && key <= 'Z')
     },
+    register(){
+      this.$router.push('/register');
+    },
     showPwd() {
       if (this.passwordType === 'password') {
         this.passwordType = ''
@@ -154,11 +160,14 @@ export default {
     },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
+        //console.log("valid",valid)
         if (valid) {
           this.loading = true
+          
           this.$store.dispatch('user/login', this.loginForm)
             .then(() => {
               this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+              
               this.loading = false
             })
             .catch(() => {

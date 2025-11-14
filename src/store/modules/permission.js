@@ -1,4 +1,5 @@
-import { asyncRoutes, constantRoutes } from '@/router'
+//import { asyncRoutes, constantRoutes } from '@/router'
+import { asyncRoutes, constantRoutes } from '../../router'
 
 /**
  * Use meta.role to determine if the current user has permission
@@ -6,7 +7,9 @@ import { asyncRoutes, constantRoutes } from '@/router'
  * @param route
  */
 function hasPermission(roles, route) {
+  roles=roles.split(',')
   if (route.meta && route.meta.roles) {
+    //return true
     return roles.some(role => route.meta.roles.includes(role))
   } else {
     return true
@@ -53,6 +56,7 @@ const actions = {
       if (roles.includes('admin')) {
         accessedRoutes = asyncRoutes || []
       } else {
+       // debugger
         accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
       }
       commit('SET_ROUTES', accessedRoutes)
