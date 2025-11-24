@@ -51,7 +51,7 @@
             <el-table-column label="操作" align="center" width="230">
                 <template slot-scope="{row,$index}">
                     <el-button type="primary" size="mini" @click="toEdit(row)">编辑</el-button>
-                    <el-button type="success" size="mini">审核</el-button> 
+                    <el-button type="success" size="mini" @click="toChange(row)">审核</el-button> 
                     <el-button type="danger" size="mini" @click="expendDelete(row)">删除</el-button>
                 </template>
             </el-table-column>
@@ -63,7 +63,8 @@
     </div>
 </template>
 <script>
-    import {getExpendList,expendDel} from "@/api/expend"
+    import {getExpendList,expendDel,addExpend} from "@/api/expend"
+    import { mapState }from "vuex"
     export default {
         name: "expenditrueList", 
         props: ["exId"],
@@ -77,10 +78,14 @@
                 // 搜索
                 name:"",
                 cate:"",
+               
             };
         },
         created(){
             this.getList();
+        },
+        computed:{
+            ...mapState("user",["roles"])
         },
          methods: {
             getList(){
@@ -101,8 +106,18 @@
                     }
                 })
             },
-            toEdit(row){
-                //console.log("exId",exId);
+            toChange(row){
+                if(this.roles!='admin'){
+                    this.$message({
+                            type: 'error',
+                            message: '没有权限!'
+                        });                   
+                }else{
+                    row.exStatus=!row.exStatus;//需要调用axios插入数据库中的数据
+                    let data=row;
+                    addExpend(data);}
+                },
+            toEdit(row){               
                 this.$router.push("/finance/expenditure-edit/"+row.exId);
             },
                 currentChangeHandle(val){

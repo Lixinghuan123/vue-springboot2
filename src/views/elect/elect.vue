@@ -62,7 +62,7 @@
     </div>
 </template>
 <script>
-    import {getCadreList,cadreDel} from "@/api/elect"
+    import {getCadreList,cadreDel,addCadre} from "@/api/elect"
     export default {
         name: " electList",
          props: ["cadreId"], 
@@ -76,6 +76,7 @@
                  total:0,
                  name:"",
                  cate:"",
+                
             };
         }, 
         created(){
@@ -103,6 +104,11 @@
             //投票
             addTicket(row){
                 row.cadreNum+=1;
+                
+                //需要调用axios插入数据库中的数据
+                let data=row;
+                addCadre(data);
+                
             },
              //英文分类转成中文
              cate2ZH(cate){
@@ -114,6 +120,7 @@
                 }   
                 },
             toEdit(row){
+
                 this.$router.push("/elect/elect-edit/"+row.cadreId);
             },
                 currentChangeHandle(val){

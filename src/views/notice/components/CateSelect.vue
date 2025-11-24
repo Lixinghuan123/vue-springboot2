@@ -36,6 +36,8 @@
         },
         methods:{
             ...mapActions("notice",["getCates"])
+
+            
         },
     };
 </script>

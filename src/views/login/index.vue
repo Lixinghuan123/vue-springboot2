@@ -104,8 +104,9 @@ export default {
         password: '111111'
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        username: [{ required: true, trigger: 'blur', }],// validator: validateUsername
+
+        password: [{ required: true, trigger: 'blur',  }]//validator: validatePassword,也可以使用校验器抽离检验
       },
       passwordType: 'password',
       capsTooltip: false,
@@ -160,7 +161,7 @@ export default {
     },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
-        //console.log("valid",valid)
+      
         if (valid) {
           this.loading = true
           

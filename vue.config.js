@@ -47,7 +47,7 @@ module.exports = {
     },
     proxy: {
         '/': {
-          target: 'http://localhost:8080',
+          target: 'http://47.239.31.65/:8080',
           changeOrigin:true,
           pathRewrite:{
             '^/':'/'

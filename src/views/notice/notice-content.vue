@@ -1,38 +1,11 @@
 <template>
     <div class="notice-list" style="margin: 20px;">
-        <el-page-header @back="$router.back()" :content=" `公告${noticeId?'编辑':'新增'}` "></el-page-header>
+        <el-page-header @back="$router.back()" content="公告详情 "></el-page-header>
 
-        <el-form ref="form" :model="ruleform" :rules="rules" label-width="100px">
-            <el-form-item>
-                <!-- 校验规则有很多，prop用来指定具体的哪条校验规则 -->
-                <el-form-item label="作者：" prop="noticeName" style="margin-left:20px; margin-top:20px;">
-                    <el-input placeholder="请输入笔名" v-model="ruleform.noticeName">
-                    </el-input>
-                </el-form-item>
-                <el-form-item label="发布时间：" prop="noticePubTime" style="margin-left:20px;margin-top:20px;">
-                    <el-date-picker type="date" placeholder="请选择日期" suffix-icon="el-icon-date"
-                        v-model="ruleform.noticePubTime" style="width: 100%;">
-                    </el-date-picker>
-                </el-form-item>
-                <el-form-item label="公告标题：" prop="noticeTitle" style="margin-left:20px;margin-top:20px;">
-                    <el-input placeholder="请输入标题" v-model="ruleform.noticeTitle">
-                    </el-input>
-                </el-form-item>
-                <el-form-item label="公告类型：" prop="noticeType" style="margin-left:20px;margin-top:20px;">
-                    <CateSelect v-model="ruleform.noticeType"></CateSelect>
-                </el-form-item>
-            </el-form-item>
+        <el-form ref="form" :model="ruleform" :rules="rules" label-width="100px">            
             <el-form-item prop="noticeContext">
                 <el-input type="textarea" :rows="15" placeholder="请输入内容" v-model="ruleform.noticeContext">
                 </el-input>
-            </el-form-item>
-            <el-form-item prop="">
-                <!-- <ImgUpload v-model="ruleform.imgUrl"></ImgUpload> -->
-                <ImgUpload :fileList="fileList"></ImgUpload>
-                <!-- v-model可以把子组件传过来的img地址赋值给imgUrl -->
-            </el-form-item>
-            <el-form-item>
-                <el-button type="primary" @click="submitForm('ruleForm')" icon="el-icon-edit">发布公告</el-button>
             </el-form-item>
         </el-form>
 
@@ -66,7 +39,6 @@
                     noticeStatus: false,
                     imgUrl: "",
                 },
-                fileList:[],
                 rules: {
                     noticeName: [
                         //required: true表示必填项
@@ -84,7 +56,7 @@
                         { pattern: /[\u4e00-\u9fa5]{2,8}/, message: '长度在 2到 8 个中文字符', trigger: 'blur' }
                     ],
                     noticeType: [
-                        { required: true, message: '请选择文章类型', trigger: 'change' },
+                        { required: true, message: '请选择文章类型', trigger: 'blur' },
                     ],
                     noticeContext: [
                         { required: true, message: '请输入公告内容', trigger: 'blur' },
@@ -95,12 +67,6 @@
 
             };
         },
-        // computed:{
-        //     ...mapState("notice",["cates"])//拿到了仓库中cates的数据，可以遍历拿到cates中的每个item
-        // },
-        // created(){     
-        //     this.getCates();
-        // },
         mounted() {
             //if noticeId值存在就说明进入了编辑界面
             if(this.noticeId){
@@ -154,6 +120,4 @@
         },
     };
 </script>
-<style lang="less" scoped>
-
-</style>
+<style lang="less" scoped></style>

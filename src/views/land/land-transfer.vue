@@ -2,15 +2,15 @@
     <div class="notice-list" style="margin: 20px;">
         <el-row>
             <el-col :span="24">
-                <el-input placeholder="请输入内容" style="width: 135px;"></el-input>
-                <el-select placeholder="请选择">
+                <el-input placeholder="请输入户主名称" style="width: 135px;"></el-input>
+                <!-- <el-select placeholder="请选择">
                     <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
-                </el-select>
+                </el-select> -->
                 <el-button type="primary" icon="el-icon-search">搜索</el-button>
-                <el-button type="primary" icon="el-icon-edit" @click="$router.push('/land/land-update/')">添加</el-button>
-                <el-button type="primary" icon="el-icon-download">访问</el-button>
-                <el-checkbox style="margin-left:20px">审核人</el-checkbox>
+               <el-button type="primary" icon="el-icon-edit" @click="$router.push('/land/land-update/')">添加</el-button>
+                <!--  <el-button type="primary" icon="el-icon-download">访问</el-button>
+                <el-checkbox style="margin-left:20px">审核人</el-checkbox> -->
             </el-col>
         </el-row>
         <!--data="list"指定数据源-->

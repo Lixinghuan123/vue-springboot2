@@ -49,7 +49,7 @@
             <el-table-column label="操作" align="center" width="230">
                 <template slot-scope="{row,$index}">
                     <el-button type="primary" size="mini" @click="toEdit(row)">编辑</el-button>
-                    <el-button  type="success" size="mini">审核</el-button>
+                    <el-button  type="success" size="mini" @click="toChange(row)">审核</el-button>
                     <el-button type="danger" size="mini" @click="incomeDelete(row)">删除</el-button>
                 </template>
             </el-table-column>
@@ -61,7 +61,8 @@
     </div>
 </template>
 <script>
-    import {getIncomeList,incomeDel} from "@/api/income"
+    import {getIncomeList,incomeDel,addIncome} from "@/api/income"
+    import { mapState }from "vuex"
     export default {
         name: " goodList", 
         props: ["inId"],
@@ -81,6 +82,9 @@
         created(){
             this.getList();
         },
+        computed:{
+            ...mapState("user",["roles"])
+        },
          methods: {
             getList(){
                 let params={
@@ -99,6 +103,16 @@
                         this.total=res.data.iPage.total;
                     }
                 })
+            },
+            toChange(row){
+                if(this.roles!='admin'){
+                    this.$message({
+                            type: 'error',
+                            message: '没有权限!'
+                        });                   
+                }else{ row.inStatus=!row.inStatus;//需要调用axios插入数据库中的数据
+                    let data=row;
+                    addIncome(data);}
             },
             toEdit(row){
                 //console.log("exId",exId);

@@ -38,13 +38,15 @@ export function updateNotice(data) {
     data
   })
 }
-export function noticeDel(noticeId){
+export function noticeDel(data){
   return request({
       url:'/notice/delete',
-      method:'PUT',
-      data:{
-        noticeId
-      }
+      method:'post',
+      // data:{
+      //   noticeId,
+        
+      // }
+      data
   })
 }
 export function getAllCates(params={}){

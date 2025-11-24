@@ -162,7 +162,7 @@ export const asyncRoutes = [
         name: 'NoticeForm',
         meta: {
           title: '添加公告',
-          roles: ['admin','editor'] // or you can only set roles in sub nav
+          roles: ['admin',] // or you can only set roles in sub nav
         }
       },
       {
@@ -173,6 +173,18 @@ export const asyncRoutes = [
         props:true,//添加这一行后，可以通过$route.params.id拿到id值
         meta: {
           title: '编辑公告',
+          roles: ['admin',] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: 'detail/:noticeId',//配置路由使得update与插入是同一个界面，但是要传入一个id
+        component: () => import('@/views/notice/notice-content'),
+        name: 'NoticeEdit',  
+        hidden:true,
+        props:true,//添加这一行后，可以通过$route.params.id拿到id值
+        meta: {
+          title: '公告详情',
+      
           roles: ['admin','editor'] // or you can only set roles in sub nav
         }
       },
@@ -196,7 +208,7 @@ export const asyncRoutes = [
         name: 'FinanceList',
         meta: {
           title: '支出列表',
-          roles: ['admin','editor'] // or you can only set roles in sub nav
+          roles: ['admin',] // or you can only set roles in sub nav
         }
       },
       {
@@ -205,7 +217,7 @@ export const asyncRoutes = [
         name: 'FinanceList',
         meta: {
           title: '支出申请',
-          roles: ['admin','editor'] // or you can only set roles in sub nav
+          roles: ['admin',] // or you can only set roles in sub nav
         }
       },
       {
@@ -216,7 +228,7 @@ export const asyncRoutes = [
         hidden:true,
         meta: {
           title: '重新编辑',
-          roles: ['admin','editor'] // or you can only set roles in sub nav
+          roles: ['admin',] // or you can only set roles in sub nav
         }
       },
       {
@@ -225,7 +237,7 @@ export const asyncRoutes = [
         name: 'FinanceIncome',
         meta: {
           title: '收入情况汇报',
-          roles: ['admin','editor'] // or you can only set roles in sub nav
+          roles: ['admin',] // or you can only set roles in sub nav
         }
       },
       {
@@ -234,7 +246,7 @@ export const asyncRoutes = [
         name: 'FinanceIncome',
         meta: {
           title: '收入情况',
-          roles: ['admin','editor'] // or you can only set roles in sub nav
+          roles: ['admin',] // or you can only set roles in sub nav
         }
       },
       {
@@ -245,7 +257,7 @@ export const asyncRoutes = [
         hidden:true,
         meta: {
           title: '收入情况重新编辑',
-          roles: ['admin','editor'] // or you can only set roles in sub nav
+          roles: ['admin',] // or you can only set roles in sub nav
         }
       },
       {
@@ -254,7 +266,7 @@ export const asyncRoutes = [
         name: 'subsidy',
         meta: {
           title: '补贴申请列表',
-          roles: ['admin','editor'] // or you can only set roles in sub nav
+          roles: ['admin',] // or you can only set roles in sub nav
         }
       },
       {
@@ -320,6 +332,7 @@ export const asyncRoutes = [
         path: 'land-edit/:landId',
         component: () => import('@/views/land/land-update'),
         name: 'LandEdit',
+        hidden:true,
         props:true,
         meta: {
           title: '重新编辑',

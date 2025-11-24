@@ -1,23 +1,22 @@
 <template>
-    <div class="notice-list" style="margin: 20px;">
-        <el-row>
-            <el-col :span="24">
-                <el-input placeholder="请输入内容" v-model.trim="name" style="width: 135px;"></el-input>
-                <!-- <el-select placeholder="请选择">
-                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
-                    </el-option>    
-                </el-select> -->
+    <div class="notice-list" style="height:100%">
+
+        <el-row class="outter" >
+            <el-col :span="12" align="start">
+                
+                <el-input placeholder="请输入内容" v-model.trim="name" style="width: 135px;"></el-input>              
                 <CateSelect clearable v-model="cate"></CateSelect>
-                <!-- <el-date-picker type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-                </el-date-picker> -->
-                <el-button type="primary" icon="el-icon-search" @click="getList">搜索</el-button>
-                <el-button type="primary" icon="el-icon-edit" @click="$router.push('/notice/add')">添加</el-button>
-                <!-- <el-button type="primary" icon="el-icon-download">访问</el-button>
-                <el-checkbox style="margin-left:20px">审核人</el-checkbox> -->
+               
+              
             </el-col>
-        </el-row>
+            <el-col :span="12" align="end">
+            <el-button type="primary" icon="el-icon-search" @click="toGetList">搜索</el-button>
+            <el-button type="primary" icon="el-icon-edit" @click="$router.push('/notice/add')">添加</el-button>
+            </el-col>
         <!--data="list"指定数据源-->
-        <el-table :data="list" style="width: 100%" border>
+        <el-col :span="24">
+           
+    <el-table :data="list"   class="show_table"   >
             <el-table-column prop="noticeId" label="序号" align="center">
                 <template slot-scope="{row,$index}">
                     <div>{{$index+1}}</div>
@@ -30,14 +29,15 @@
                     <div>{{row.noticeTitle}}</div>
                 </template>
             </el-table-column>
-            <!-- <el-table-column prop="price" label="价格" align="center">
-                <template slot-scope="{row,$index}">
-                    <div>{{ `¥${row.price.toFixed(2)}` }}</div>
-                </template>
-            </el-table-column> -->
+          
             <el-table-column prop="noticeType" label="公告类型" align="center">
                 <template slot-scope="{row,$index}">
                     <div>{{ cate2ZH (row.noticeType) }}</div>
+                </template>
+            </el-table-column>
+            <el-table-column prop="noticeName" label="公告作者" align="center">
+                <template slot-scope="{row,$index}">
+                    <div>{{row.noticeName }}</div>
                 </template>
             </el-table-column>
             <el-table-column prop="read" label="是否已读" align="center">
@@ -50,29 +50,29 @@
                     <div>{{ row.noticePubTime }}</div>
                 </template>
             </el-table-column>
-            <el-table-column prop="noticeStatus" label="公告状态" align="center">
-                <template slot-scope="{row,$index}">
-                    <div>{{ row.noticeStatus?'已上架':'待审核' }}</div>
-                </template>
-            </el-table-column>
+            
             <el-table-column label="操作" align="center" width="230">
                 <template slot-scope="{row,$index}">
                     <el-button type="primary" size="mini" @click="toEdit(row)">编辑</el-button>
-                    <el-button v-if="row.published" type="primary" size="mini">详情</el-button>
-                    <el-button v-else type="success" size="mini" @click="toChange(row)">审核</el-button>
+                    <el-button type="primary" size="mini" @click="toDetail(row)">详情</el-button>
                     <el-button type="danger" size="mini" @click="noticeDelete(row)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
         <el-pagination style="margin-top:  20px;" :current-page="page" :page-sizes="[2, 5, 10, 20]"
             :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total " @current-change="currentChangeHandle"
-            @size-change="sizeChangeHandle">
+            @size-change="sizeChangeHandle" v-if="total!=0">
         </el-pagination>
+        </el-col>
+    </el-row>
+
+
     </div>
 </template>
 <script>
      import CateSelect from "./components/CateSelect.vue";
      import {getNoticeList,getNoticeInfo,noticeDel} from "@/api/notice"
+     import {addRead} from "@/api/read"
      import { mapState }from "vuex"
     export default {
         name: "noticeList", 
@@ -83,8 +83,9 @@
                 list:[],
                 // 分页
                 //id:'',
+                num:0,
                 page:1,
-                size:2,
+                size:5,
                 total:0,
                 // 搜索
                 name:"",
@@ -94,16 +95,29 @@
         components:{
             CateSelect,
         },
-        created(){
+        created(){  
+            
+            this.page=Number(localStorage.getItem("page"));
+            console.log(this.cate);
+            if(this.cate){ this.page=1;}
             this.getList();
         },
         computed:{
             ...mapState("notice",["cates"]),
-            ...mapState("user",["id"])
+            ...mapState("user",["id"]),
+            ...mapState("user",["roles"])
         },
       
         methods: {
+            toGetList(){
+                console.log("cate:",this.cate);
+                this.page=this.cate?1:this.page;
+                this.page=this.name?1:this.page;
+                localStorage.setItem("page",this.page.toString());
+                this.getList();
+            },
             getList(){
+               
                 let params={
                     id:this.id,
                     currentPage:this.page,//当前页
@@ -114,7 +128,7 @@
                 
                 getNoticeList(params).then(res=>{
                    // debugger,一定要返回ok（）
-                    console.log("res",res);
+                   // console.log("res",res);
                    if(res.data && res.data.iPage.records){
                         this.list=res.data.iPage.records;
                         this.total=res.data.iPage.total;
@@ -130,11 +144,30 @@
                     return "暂无分类";
                 }   
                 },
-                toChange(row){
-                    row.noticeStatus=!row.noticeStatus;
-                },
+            toDetail(row){
+                localStorage.setItem("page",this.page.toString())||1;
+                let data={
+                        noticeId:row.noticeId,
+                        userId:this.id};
+               // console.log("data",data);
+                addRead(data).then(res => {
+                            console.log(res);                            
+                            if (res.success) {//这里好像得对data的数据格式有要求 
+                               console.log("chenggong");
+                            }
+                        })
+                this.$router.push("/notice/detail/"+row.noticeId);
+            },
             toEdit(row){
-                this.$router.push("/notice/edit/"+row.noticeId);
+               // console.log(this.page);
+                localStorage.setItem("page",this.page.toString())||1;
+                
+                if(this.roles!='admin'){
+                    this.$message({
+                            type: 'error',
+                            message: '没有权限!'
+                        });                   
+                }else{this.$router.push("/notice/edit/"+row.noticeId);}                
             },
                 currentChangeHandle(val){
                     this.page=val;
@@ -150,8 +183,13 @@
                 cancelButtonText: '取消',
                 type: 'warning'
                 }).then(() => {
-                   // console.log("noticeId",row.noticeId);//变量的格式到底是什么，row.noticeId为什么是未定义的
-                    noticeDel(row.noticeId).then(res=>{
+                    
+                    let data={
+                        noticeId:row.noticeId,
+                        userId:this.id};
+                   
+                   //console.log("data",data);//变量的格式到底是什么，row.noticeId为什么是未定义的
+                    noticeDel(data).then(res=>{
                         console.log("success",res.success)
                        if(res.success==true){
                         this.$message({
@@ -171,38 +209,28 @@
             }
         },
     }; </script>
-<style lang="scss">
-    .el-row {
-        margin-bottom: 20px;
-
-        &:last-child {
-            margin-bottom: 0;
-        }
+<style  scoped>
+    .outter {
+        background: rgb(239, 227, 227);
+        padding:5px;
+        margin:5px;
     }
+.show_table {
+    position: relative;
+    overflow: auto;
+    height:405px;
+    margin-top:5px;
+   
+}
 
-    .el-col {
-        border-radius: 4px;
-    }
-
-    .bg-purple-dark {
-        background: #99a9bf;
-    }
-
-    .bg-purple {
-        background: #d3dce6;
-    }
-
-    .bg-purple-light {
-        background: #e5e9f2;
-    }
-
-    .grid-content {
-        border-radius: 4px;
-        min-height: 36px;
-    }
-
-    .row-bg {
-        padding: 10px 0;
-        background-color: #f9fafc;
-    }
 </style>
+<!-- <el-table-column prop="noticeStatus" label="公告状态" align="center">
+                <template slot-scope="{row,$index}">
+                    <div>{{ row.noticeStatus?'已上架':'待审核' }}</div>
+                </template>
+            </el-table-column> -->
+              <!-- <el-table-column prop="price" label="价格" align="center">
+                <template slot-scope="{row,$index}">
+                    <div>{{ `¥${row.price.toFixed(2)}` }}</div>
+                </template>
+            </el-table-column> -->
