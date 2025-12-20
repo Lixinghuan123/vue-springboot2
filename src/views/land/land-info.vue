@@ -44,7 +44,7 @@
             </el-table-column>
             <el-table-column prop="certificatesImg" label="证书截图" align="center">
                 <template slot-scope="{row,$index}">
-                    <el-image :src="`http://localhost:8080/${row.certificatesImg}`"></el-image>                 
+                    <el-image :src="`/${row.certificatesImg}`"></el-image>                 
                 </template>
             </el-table-column>   
             <el-table-column prop="certificatesPeriod" label="发布时间" align="center">

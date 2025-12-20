@@ -24,7 +24,7 @@
             </el-table-column>
             <el-table-column prop="title" label="公告标题" align="center">
                 <template slot-scope="{row,$index}">
-                    <img src="row.img" alt="">
+                    <img :src="getFullImageUrl(row.img)" alt="">
                     <div>{{row.title}}</div>
                 </template>
             </el-table-column>
@@ -76,7 +76,16 @@
                 options: [],
                 list:[],
             };
-        }, methods: {},
+        }, methods: {
+            getFullImageUrl(imgPath) {
+        // 如果已经是完整的URL，直接返回
+        if (imgPath && (imgPath.startsWith('http://') || imgPath.startsWith('https://'))) {
+          return imgPath;
+        }
+        // 使用相对路径，让代理处理
+        return `/${imgPath}`;
+      }
+        },
     }; 
 </script>
 <style lang="scss">

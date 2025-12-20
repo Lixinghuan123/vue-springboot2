@@ -26,7 +26,7 @@
             <el-table-column prop="noticeTitle" label="公告标题" align="center">
                 <template slot-scope="{row,$index}">
                     <!-- <img src="row.imgUrl" alt=""> 不知道为什么img标签不行-->
-                    <el-image :src="`http://localhost:8080/${row.imgUrl}`"></el-image>
+                    <el-image :src="`/${row.imgUrl}`"></el-image>
                     <div>{{row.noticeTitle}}</div>
                 </template>
             </el-table-column>

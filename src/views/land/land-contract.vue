@@ -47,7 +47,7 @@
             </el-table-column>
             <el-table-column prop="contractImg" label="承包证书截图" align="center">
                 <template slot-scope="{row,$index}">
-                    <el-image :src="`http://localhost:8080/${row.contractImg}`"></el-image>                 
+                    <el-image :src="`/${row.contractImg}`"></el-image>                 
                 </template>
             </el-table-column>   
            

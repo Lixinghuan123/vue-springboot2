@@ -20,7 +20,7 @@
 
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+          <img :src="getFullImageUrl(avatar)+'?imageView2/1/w/80/h/80'" class="user-avatar">
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
@@ -71,6 +71,14 @@ export default {
     ])
   },
   methods: {
+    getFullImageUrl(imgPath) {
+        // 如果已经是完整的URL，直接返回
+        if (imgPath && (imgPath.startsWith('http://') || imgPath.startsWith('https://'))) {
+          return imgPath;
+        }
+        // 使用相对路径，让代理处理
+        return `/${imgPath}`;
+      },
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
     },
