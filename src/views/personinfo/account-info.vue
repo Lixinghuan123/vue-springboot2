@@ -22,10 +22,10 @@
                     <div>{{$index+1}}</div>
                 </template>
             </el-table-column>
-            <el-table-column prop="title" label="公告标题" align="center">
+            <el-table-column prop="username" label="账号" align="center">
                 <template slot-scope="{row,$index}">
-                    <img src="row.img" alt="">
-                    <div>{{row.title}}</div>
+                    <img :src="`http://localhost:8080/${row.img}`" alt="">
+                    <div>{{row.username}}</div>
                 </template>
             </el-table-column>
             <!-- <el-table-column prop="price" label="价格" align="center">
@@ -33,24 +33,19 @@
                     <div>{{ `¥${row.price.toFixed(2)}` }}</div>
                 </template>
             </el-table-column> -->
-            <el-table-column prop="cate" label="公告类型" align="center">
+            <el-table-column prop="truename" label="真实姓名" align="center">
                 <template slot-scope="{row,$index}">
-                    <div>{{ row.cate }}</div>
+                    <div>{{ row.truename }}</div>
                 </template>
             </el-table-column>
-            <el-table-column prop="read" label="是否已读" align="center">
+            <el-table-column prop="roles" label="角色" align="center">
                 <template slot-scope="{row,$index}">
-                    <div>{{ row.read ? '是':'否' }}</div>
+                    <div>{{ row.roles }}</div>
                 </template>
             </el-table-column>
-            <el-table-column prop="create_date" label="发布时间" align="center">
+            <el-table-column prop="introduce" label="简介" align="center">
                 <template slot-scope="{row,$index}">
-                    <div>{{ row.create_date }}</div>
-                </template>
-            </el-table-column>
-            <el-table-column prop="check_status" label="公告状态" align="center">
-                <template slot-scope="{row,$index}">
-                    <div>{{ row.check_status?'已上架':'待审核' }}</div>
+                    <div>{{ row.introduce }}</div>
                 </template>
             </el-table-column>
             <el-table-column label="操作" align="center" width="230">
@@ -68,6 +63,7 @@
     </div>
 </template>
 <script>
+import { getAccountList } from "@/api/account";
     export default {
         name: "accountList",
         props: [],
@@ -76,7 +72,20 @@
                 options: [],
                 list:[],
             };
-        }, methods: {},
+        },
+        mounted() {
+            this.fetchAccountList();
+        },
+        methods: {
+            fetchAccountList() {
+                getAccountList().then(res => {
+                    console.log("账户列表数据:", res);
+                    this.list = res.data;
+                }).catch(err => {
+                    console.error("获取账户列表失败:", err);
+                });
+            }
+        },
     }; 
 </script>
 <style lang="scss">
